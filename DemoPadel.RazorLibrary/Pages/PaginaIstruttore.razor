@@ -1,0 +1,77 @@
+﻿@page "/istruttore/{Id}"
+@using Padel.Core.Interfaces
+@using Padel.Core.ViewModels
+@using DemoPadel.RazorLibrary.Components
+
+@inject IDatiIstruttori servizio
+
+@if(lezioneCorrente is null){
+    @if(istruttore is not null)
+    {
+      <CardIstruttore istruttore="@istruttore"></CardIstruttore>
+
+      <button style="margin-bottom:10px" @onclick="() => AggiungiLezione()" class="btn btn-success">Aggiungi Lezione</button>
+
+        <div class="alert alert-primary" role="alert">
+            Prossime Lezioni
+        </div>
+
+        @foreach(var lezione in istruttore.Lezioni)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Ora di inizio: @lezione.DataOraInizio.Humanize()</h5>
+                    <h6>Durata: @((lezione.DataOraFine - lezione.DataOraInizio).Humanize(precision:2))</h6>
+
+
+                    <button type="button" class="btn btn-primary">Campo <span class="badge badge-light">@lezione.Campo</span></button>
+
+                </div>
+            </div>
+        }
+
+    }
+} else {
+    <DettaglioGenerico DetailsType="LezioneViewModel" Item="lezioneCorrente"
+                       OnSave="Save" OnCancel="Cancel">
+        
+        <TextBox Id="campo" Label="Campo" @bind-Value="lezioneCorrente.Campo"></TextBox>
+        
+        
+    </DettaglioGenerico>
+}
+
+
+@code {
+    [Parameter] public string? Id { get; set; }
+    private DettaglioIstruttoreViewModel? istruttore;
+
+    private LezioneViewModel lezioneCorrente;
+
+    private async Task Save(LezioneViewModel lezione)
+    {
+        await servizio.AggiungiLezioneAdIstruttoreAsync(int.Parse(Id), lezione);
+        istruttore = await
+            servizio.EstraiDettaglioIstruttoreAsync(int.Parse(Id));
+
+    }
+    private void Cancel()
+    {
+        lezioneCorrente = null;
+    }
+
+    private void AggiungiLezione()
+    {
+        lezioneCorrente = new LezioneViewModel();
+
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(Id is not null)
+        {
+            istruttore = await
+               servizio.EstraiDettaglioIstruttoreAsync(int.Parse(Id));
+        }
+    }
+}
