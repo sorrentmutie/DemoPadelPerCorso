@@ -19,7 +19,11 @@ public static class MieEstensioni
 
     public static bool NomeIniziaCon(this Persona persona, string lettera)
     {
-        return persona.Nome.StartsWith(lettera);
+        if(persona != null && persona.Nome != null)
+        {
+            return persona.Nome.StartsWith(lettera);
+        }
+        return false;
     }
 
 }

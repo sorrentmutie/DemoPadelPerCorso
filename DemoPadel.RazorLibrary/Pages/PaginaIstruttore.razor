@@ -46,14 +46,16 @@
     [Parameter] public string? Id { get; set; }
     private DettaglioIstruttoreViewModel? istruttore;
 
-    private LezioneViewModel lezioneCorrente;
+    private LezioneViewModel? lezioneCorrente;
 
     private async Task Save(LezioneViewModel lezione)
     {
-        await servizio.AggiungiLezioneAdIstruttoreAsync(int.Parse(Id), lezione);
-        istruttore = await
-            servizio.EstraiDettaglioIstruttoreAsync(int.Parse(Id));
-
+        if(Id != null)
+        {
+            await servizio.AggiungiLezioneAdIstruttoreAsync(int.Parse(Id), lezione);
+            istruttore = await
+                servizio.EstraiDettaglioIstruttoreAsync(int.Parse(Id));
+        }
     }
     private void Cancel()
     {

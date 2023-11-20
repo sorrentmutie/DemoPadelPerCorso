@@ -40,9 +40,9 @@ public class GiocatorePadel: Persona
     //}
     #endregion
 
-    public string NumeroTessera { get; set; }
+    public string NumeroTessera { get; set; } = "";
     public DateTime DataScadenzaIscrizione { get; set; }
-    public CircoloPadel Circolo { get; set; }
+    public CircoloPadel? Circolo { get; set; }
     public bool TesseraValida { get; set; }
 
     //public bool TesseraValida()
